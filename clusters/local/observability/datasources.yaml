@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources-loki-tempo
+  namespace: observability
+  labels:
+    # Picked up by the kube-prometheus-stack Grafana datasource sidecar.
+    grafana_datasource: "1"
+data:
+  loki-tempo-datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.observability.svc:3100
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.observability.svc:3100

@@ -1,0 +1,21 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: shop-operator
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: oci://ghcr.io/shopp-ops/charts/shop-operator
+  ref:
+    semver: ">=0.1.0"
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: shophub
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: oci://ghcr.io/shopp-ops/charts/shophub
+  ref:
+    semver: ">=0.1.0"

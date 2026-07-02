@@ -1,0 +1,11 @@
+# Informational metadata about this cluster. Not a workload — just a labelled
+# marker Flux applies harmlessly so the cluster identity is described in Git.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-info
+  namespace: flux-system
+data:
+  name: local
+  environment: local
+  provider: kind

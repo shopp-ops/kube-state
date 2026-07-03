@@ -40,3 +40,10 @@ data:
       create: true
     rbac:
       create: true
+    metrics:
+      serviceMonitor:
+        enabled: true
+    otel:
+      enabled: true
+      endpoint: "http://alloy.observability.svc:4318"
+      serviceName: "shophub-api"

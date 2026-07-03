@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shophub-values
+  namespace: shophub
+data:
+  values.yaml: |
+    api:
+      replicaCount: 1
+      image:
+        repository: ghcr.io/shopp-ops/shophub-api
+        tag: latest
+      baseUrl: "http://shophub.local/api"   # CORS_ORIGIN
+      nodeEnv: "production"
+      # Images the operator stamps onto every Shop CR.
+      shopApiImage: "ghcr.io/shopp-ops/shop-api:latest"
+      shopWebImage: "ghcr.io/shopp-ops/shop-web:latest"
+      # Per-shop ingress host suffix: shophub.<name>-<id>.<suffix>.
+      # sslip.io resolves every shop to localhost with no /etc/hosts edits.
+      shopHostSuffix: "127.0.0.1.sslip.io"
+    web:
+      replicaCount: 1
+      image:
+        repository: ghcr.io/shopp-ops/shophub-web
+        tag: latest
+      baseUrl: "http://shophub.local"
+      nodeEnv: "production"
+    ingress:
+      enabled: true
+      className: nginx
+      host: shophub.local
+    database:
+      clusterName: shophub-db
+      name: shophub
+      username: shophub
+      storage: 1Gi
+      instances: 1
+      # password is set from the shophub-secrets Secret, not here.
+    serviceAccount:
+      create: true
+    rbac:
+      create: true

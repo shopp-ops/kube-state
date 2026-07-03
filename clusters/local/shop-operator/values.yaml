@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-operator-values
+  namespace: shop-operator-system
+data:
+  values.yaml: |
+    manager:
+      replicas: 1
+      # tag unset -> defaults to the chart's appVersion, so it tracks the
+      # OCIRepository semver instead of pinning an image tag here.
+      # imagePullSecrets:
+      #   - name: ghcr-auth
+    rbac:
+      # Cluster-scoped: the operator watches Shop CRs in every shop namespace.
+      namespaced: false
+    crd:
+      enabled: true
+      keep: true
+    metrics:
+      enabled: true
+      # Plain HTTP for local scraping; no cert-manager needed.
+      secure: false

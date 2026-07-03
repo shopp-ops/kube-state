@@ -16,6 +16,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  url: oci://ghcr.io/shopp-ops/charts/shophub
+  # helm-charts CI publishes to oci://ghcr.io/shopp-ops/<chart> (no /charts/ segment),
+  # unlike the operator chart which is published under /charts/ by the operator repo.
+  url: oci://ghcr.io/shopp-ops/shophub
   ref:
     semver: ">=0.1.0"

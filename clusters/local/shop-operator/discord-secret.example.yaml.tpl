@@ -14,14 +14,9 @@
 #       --from-literal=bot-token="<bot-token>" \
 #       --from-literal=guild-id="<guild-id>"
 #
-# DEPENDENCY (not wired here): the shop-operator Helm chart must inject these into
-# the manager Deployment as env, e.g.
-#   env:
-#     - name: DISCORD_BOT_TOKEN
-#       valueFrom: { secretKeyRef: { name: shop-operator-discord, key: bot-token } }
-#     - name: DISCORD_GUILD_ID
-#       valueFrom: { secretKeyRef: { name: shop-operator-discord, key: guild-id } }
-# The operator chart lives in the shop-operator repo (published to OCI), not here.
+# The operator Deployment already reads these from this Secret (secretKeyRef,
+# optional: true — wired in shop-operator config/manager/manager.yaml). Just
+# create the Secret with the two keys below; nothing else to wire.
 #
 apiVersion: v1
 kind: Secret

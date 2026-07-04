@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cluster-alerts
+  namespace: observability
+spec:
+  interval: 10m
+  # Release name -> DiscordChannel CR name -> Secret discord-cluster-alerts,
+  # which Alertmanager mounts (see kube-prometheus-stack.yaml).
+  releaseName: cluster-alerts
+  chartRef:
+    kind: OCIRepository
+    name: discord-channel
+    namespace: flux-system
+  dependsOn:
+    - name: shop-operator   # DiscordChannel CRD + the controller that provisions the channel
+      namespace: shop-operator-system
+  values:
+    shopName: cluster-alerts

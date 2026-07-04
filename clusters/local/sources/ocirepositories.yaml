@@ -21,3 +21,17 @@ spec:
   url: oci://ghcr.io/shopp-ops/shophub
   ref:
     semver: ">=0.1.0"
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: discord-channel
+  namespace: flux-system
+spec:
+  interval: 10m
+  # helm-charts CI publishes to oci://ghcr.io/shopp-ops/<chart> (no /charts/ segment).
+  url: oci://ghcr.io/shopp-ops/discord-channel
+  ref:
+    # 0.3.0 is the first bot-model chart (spec.shopName); earlier tags used the
+    # removed webhookURL schema.
+    semver: ">=0.3.0"

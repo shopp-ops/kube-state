@@ -51,6 +51,32 @@ spec:
         # Pick up per-shop AlertmanagerConfig objects in any namespace.
         alertmanagerConfigSelector: {}
         alertmanagerConfigNamespaceSelector: {}
+        # Mount the shared cluster channel's webhook Secret (created by the
+        # operator from the cluster-alerts DiscordChannel) at
+        # /etc/alertmanager/secrets/discord-cluster-alerts/. Alertmanager stays
+        # in ContainerCreating until this Secret exists, then starts.
+        secrets:
+          - discord-cluster-alerts
+      # Global routing tree (base/default route). Per-shop AlertmanagerConfig CRs
+      # are grafted underneath as namespace-scoped child routes; anything that
+      # matches no shop falls through to the default receiver = shared channel.
+      config:
+        route:
+          receiver: cluster-discord
+          group_by: ["alertname", "namespace"]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 4h
+          routes:
+            # Watchdog fires constantly by design; drop it.
+            - receiver: "null"
+              matchers:
+                - alertname = "Watchdog"
+        receivers:
+          - name: "null"
+          - name: cluster-discord
+            discord_configs:
+              - webhook_url_file: /etc/alertmanager/secrets/discord-cluster-alerts/webhook-url
     grafana:
       # LOCAL ONLY — swap to admin.existingSecret for anything shared.
       adminPassword: admin

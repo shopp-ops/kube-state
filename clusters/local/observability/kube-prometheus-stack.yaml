@@ -24,6 +24,29 @@ spec:
     # CRDs are owned by the prometheus-operator-crds release above.
     crds:
       enabled: false
+    # Rendered by this release (which dependsOn prometheus-operator-crds), so the
+    # PrometheusRule CRD is guaranteed present before the rule is applied — unlike
+    # a raw CR in the root Kustomization, which races the CRD on a fresh bootstrap.
+    additionalPrometheusRulesMap:
+      shopops-rules:
+        groups:
+          - name: shopops.rules
+            rules:
+              # A shop API scrape target is down. The `namespace` label is
+              # preserved from the target, so this alert routes to that shop's
+              # Discord channel via the shop's AlertmanagerConfig. Non-shop
+              # targets fall through to the shared cluster channel.
+              - alert: ShopApiDown
+                expr: up{endpoint="http"} == 0
+                for: 2m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Shop API target down in {{ $labels.namespace }}"
+                  description: "The API endpoint {{ $labels.namespace }}/{{ $labels.service }} has been unreachable for 2m."
+              # kube-prometheus-stack defaultRules already ship node/pod/kubernetes
+              # alerts; those carry a `namespace` label too, so pod-level failures
+              # in a shop namespace also reach that shop's channel automatically.
     prometheus:
       prometheusSpec:
         replicas: 1

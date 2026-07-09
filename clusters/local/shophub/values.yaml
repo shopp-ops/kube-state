@@ -9,12 +9,12 @@ data:
       replicaCount: 1
       image:
         repository: ghcr.io/shopp-ops/shophub-api
-        tag: "1.0.1"
+        tag: "1.1.0"
       baseUrl: "http://shophub.local/api"   # CORS_ORIGIN
       nodeEnv: "production"
       # Images the operator stamps onto every Shop CR.
-      shopApiImage: "ghcr.io/shopp-ops/shop-api:1.0.0"
-      shopWebImage: "ghcr.io/shopp-ops/shop-web:1.0.0"
+      shopApiImage: "ghcr.io/shopp-ops/shop-api:1.1.0"
+      shopWebImage: "ghcr.io/shopp-ops/shop-web:1.1.0"
       # Per-shop ingress host suffix: shophub.<name>-<id>.<suffix>.
       # sslip.io resolves every shop to localhost with no /etc/hosts edits.
       shopHostSuffix: "127.0.0.1.sslip.io"
@@ -22,7 +22,7 @@ data:
       replicaCount: 1
       image:
         repository: ghcr.io/shopp-ops/shophub-web
-        tag: "1.0.1"
+        tag: "1.1.0"
       baseUrl: "http://shophub.local"
       nodeEnv: "production"
     ingress:

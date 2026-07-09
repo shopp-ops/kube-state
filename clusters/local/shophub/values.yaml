@@ -9,7 +9,7 @@ data:
       replicaCount: 1
       image:
         repository: ghcr.io/shopp-ops/shophub-api
-        tag: "1.1.0"
+        tag: "1.1.1"
       baseUrl: "http://shophub.local/api"   # CORS_ORIGIN
       nodeEnv: "production"
       # Images the operator stamps onto every Shop CR.
@@ -22,7 +22,7 @@ data:
       replicaCount: 1
       image:
         repository: ghcr.io/shopp-ops/shophub-web
-        tag: "1.1.0"
+        tag: "1.1.1"
       baseUrl: "http://shophub.local"
       nodeEnv: "production"
     ingress:

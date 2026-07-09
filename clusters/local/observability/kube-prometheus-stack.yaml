@@ -24,6 +24,13 @@ spec:
     # CRDs are owned by the prometheus-operator-crds release above.
     crds:
       enabled: false
+    # Explicit (matches chart 87.5.1's own default) so a future chart upgrade
+    # can't silently drop cluster CPU/RAM/FS/network alarms — verified via
+    # `helm show values kube-prometheus-stack --version 87.5.1` that this
+    # enables the node, kubernetesResources, kubeStateMetrics, and network
+    # rule groups.
+    defaultRules:
+      create: true
     # Rendered by this release (which dependsOn prometheus-operator-crds), so the
     # PrometheusRule CRD is guaranteed present before the rule is applied — unlike
     # a raw CR in the root Kustomization, which races the CRD on a fresh bootstrap.

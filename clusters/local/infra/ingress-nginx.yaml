@@ -30,3 +30,11 @@ spec:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Equal"
           effect: "NoSchedule"
+      # Edge metrics (true response time, request totals, response size) for
+      # spec §4.1's web-traffic panels. Prometheus is configured for
+      # cross-namespace ServiceMonitor discovery (kube-prometheus-stack.yaml),
+      # so no extra namespace selector is needed here.
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true

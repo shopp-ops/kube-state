@@ -22,6 +22,12 @@ spec:
       # Required for ingress to work on kind — binds directly to the node's host ports
       hostPort:
         enabled: true
+      # hostPort + a single kind node means a second pod can never schedule
+      # alongside the first (port conflict) — default RollingUpdate deadlocks
+      # forever waiting for a surge pod that can't be placed. Recreate frees
+      # the ports before scheduling the replacement.
+      updateStrategy:
+        type: Recreate
       service:
         type: NodePort
       nodeSelector:

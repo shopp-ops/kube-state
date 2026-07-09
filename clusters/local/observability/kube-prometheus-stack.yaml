@@ -24,6 +24,8 @@ spec:
     # CRDs are owned by the prometheus-operator-crds release above.
     crds:
       enabled: false
+    defaultRules:
+      create: true
     # Rendered by this release (which dependsOn prometheus-operator-crds), so the
     # PrometheusRule CRD is guaranteed present before the rule is applied — unlike
     # a raw CR in the root Kustomization, which races the CRD on a fresh bootstrap.

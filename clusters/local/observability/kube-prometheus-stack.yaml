@@ -111,6 +111,8 @@ spec:
       # LOCAL ONLY — swap to admin.existingSecret for anything shared.
       adminPassword: admin
       sidecar:
+        # shop gets its own file (and its own dashboard).
+        enableUniqueFilenames: true
         dashboards:
           enabled: true
           searchNamespace: ALL

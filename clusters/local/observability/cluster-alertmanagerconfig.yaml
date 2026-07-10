@@ -1,0 +1,44 @@
+# Global/base Alertmanager routing tree, wired in via
+# alertmanager.alertmanagerSpec.alertmanagerConfiguration in
+# kube-prometheus-stack.yaml. Defined as an AlertmanagerConfig (not a raw inline
+# `config:`) so the shared Discord channel can be referenced with an apiURL
+# Secret ref — the operator-native mechanism, identical to how per-shop
+# AlertmanagerConfigs work. A raw inline config using `webhook_url_file` is
+# rejected by prometheus-operator v0.92's discordConfig schema ("field
+# webhook_url_file not found in type alertmanager.discordConfig"), which blocks
+# the Alertmanager StatefulSet from ever being created.
+#
+# Because this is referenced as the top-level alertmanagerConfiguration, its
+# route is the true global root (no namespace matcher is injected). Per-shop
+# AlertmanagerConfigs (selected via the empty alertmanagerConfigSelector) are
+# grafted underneath as namespace-scoped child routes; any alert that matches no
+# shop falls through to this default receiver = the shared cluster channel.
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: cluster-alerts
+  namespace: observability
+spec:
+  route:
+    receiver: cluster-discord
+    groupBy: ["alertname", "namespace"]
+    # 10s (not the usual 30s) so alerts reach Discord promptly in demos.
+    groupWait: 10s
+    groupInterval: 5m
+    repeatInterval: 4h
+    routes:
+      # Watchdog fires constantly by design (dead-man's switch); drop it.
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            value: Watchdog
+            matchType: "="
+  receivers:
+    - name: "null"
+    - name: cluster-discord
+      discordConfigs:
+        # Webhook URL is read from the Secret the cluster-alerts DiscordChannel
+        # controller writes (see discord-cluster-channel.yaml).
+        - apiURL:
+            name: discord-cluster-alerts
+            key: webhook-url

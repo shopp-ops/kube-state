@@ -29,3 +29,21 @@ spec:
               endpoint: 0.0.0.0:4317
             http:
               endpoint: 0.0.0.0:4318
+      # Metrics-generator with the local-blocks processor.
+      metricsGenerator:
+        enabled: true
+        processor:
+          local_blocks:
+            filter_server_spans: false
+            flush_to_storage: true
+        storage:
+          path: /tmp/tempo/generator/wal
+        traces_storage:
+          path: /tmp/tempo/generator/traces
+      # The generator only runs a processor for a tenant if that tenant's
+      # overrides list it. This turns local-blocks on for the default tenant.
+      overrides:
+        defaults:
+          metrics_generator:
+            processors:
+              - local-blocks

@@ -12,10 +12,12 @@ data:
     datasources:
       - name: Loki
         type: loki
+        uid: loki
         access: proxy
         url: http://loki.observability.svc:3100
       - name: Tempo
         type: tempo
+        uid: tempo
         access: proxy
         # Tempo's Service exposes no :3100 — its HTTP query API listens on
         # :3200 (chart names the port "tempo-prom-metrics", but it's Tempo's

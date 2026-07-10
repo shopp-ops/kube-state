@@ -6,7 +6,8 @@ metadata:
 spec:
   interval: 10m
   # Release name -> DiscordChannel CR name -> Secret discord-cluster-alerts,
-  # which Alertmanager mounts (see kube-prometheus-stack.yaml).
+  # referenced by the cluster-alerts AlertmanagerConfig via an apiURL Secret ref
+  # (see cluster-alertmanagerconfig.yaml).
   releaseName: cluster-alerts
   chartRef:
     kind: OCIRepository

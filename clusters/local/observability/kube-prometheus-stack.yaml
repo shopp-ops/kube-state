@@ -45,7 +45,7 @@ spec:
               # targets fall through to the shared cluster channel.
               - alert: ShopApiDown
                 expr: up{endpoint="http"} == 0
-                for: 2m
+                for: 1m
                 labels:
                   severity: critical
                 annotations:
@@ -81,32 +81,15 @@ spec:
         # Pick up per-shop AlertmanagerConfig objects in any namespace.
         alertmanagerConfigSelector: {}
         alertmanagerConfigNamespaceSelector: {}
-        # Mount the shared cluster channel's webhook Secret (created by the
-        # operator from the cluster-alerts DiscordChannel) at
-        # /etc/alertmanager/secrets/discord-cluster-alerts/. Alertmanager stays
-        # in ContainerCreating until this Secret exists, then starts.
-        secrets:
-          - discord-cluster-alerts
-      # Global routing tree (base/default route). Per-shop AlertmanagerConfig CRs
-      # are grafted underneath as namespace-scoped child routes; anything that
-      # matches no shop falls through to the default receiver = shared channel.
-      config:
-        route:
-          receiver: cluster-discord
-          group_by: ["alertname", "namespace"]
-          group_wait: 30s
-          group_interval: 5m
-          repeat_interval: 4h
-          routes:
-            # Watchdog fires constantly by design; drop it.
-            - receiver: "null"
-              matchers:
-                - alertname = "Watchdog"
-        receivers:
-          - name: "null"
-          - name: cluster-discord
-            discord_configs:
-              - webhook_url_file: /etc/alertmanager/secrets/discord-cluster-alerts/webhook-url
+        # Base/global routing comes from the cluster-alerts AlertmanagerConfig
+        # (cluster-alertmanagerconfig.yaml, same namespace) referenced here as
+        # the top-level config. It defines the root route -> shared Discord
+        # channel via an apiURL Secret ref. A raw inline `config:` with
+        # `webhook_url_file` CANNOT be used: prometheus-operator v0.92's
+        # discordConfig schema rejects that field, which blocks the Alertmanager
+        # StatefulSet from being created at all (Reconciled=False, no pod).
+        alertmanagerConfiguration:
+          name: cluster-alerts
     grafana:
       # LOCAL ONLY — swap to admin.existingSecret for anything shared.
       adminPassword: admin
